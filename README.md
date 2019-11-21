@@ -1,2 +1,2 @@
-# Bachelorarbeit
-Blockchain Datenbank mit MongoDB
+# Blockchain Database
+Blockchain Database with MongoDB
