@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/blockchain-database.iml" filepath="$PROJECT_DIR$/.idea/modules/blockchain-database.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Blockchain-Database.iml" filepath="$PROJECT_DIR$/.idea/modules/Blockchain-Database.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Blockchain-Database-build.iml" filepath="$PROJECT_DIR$/.idea/modules/Blockchain-Database-build.iml" />
     </modules>
   </component>
 </project>
