@@ -1,14 +1,14 @@
-package database
+package model
 
 import org.junit.runner.RunWith
 import org.scalatest._
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class MongoDbDaoSpec extends WordSpec with Matchers {
-  "A MongoDbDao" when {
+class BlockSpec extends WordSpec with Matchers {
+  "A Block" when {
     "new" should {
-      println("hello world")
+
     }
   }
 }
