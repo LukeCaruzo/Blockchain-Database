@@ -1,11 +1,13 @@
 package database
 
+import model.Block
+
 trait DaoTrait {
-  def create()
+  def create(block: Block)
 
-  def read()
+  def read(id: Int)
 
-  def update()
+  // def update()
 
-  def delete()
+  // def delete()
 }
