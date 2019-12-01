@@ -2,4 +2,6 @@ package model
 
 import java.util.ArrayList
 
-case class Block(id: Int, size: Int, hash: String, transactionList: ArrayList[Transaction] = new ArrayList[Transaction]())
+import org.mongodb.scala.bson.ObjectId
+
+case class Block(_id: ObjectId, size: Int, hash: String, transactionList: ArrayList[Transaction] = new ArrayList[Transaction]())

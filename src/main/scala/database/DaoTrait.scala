@@ -5,7 +5,7 @@ trait DaoTrait {
 
   def read()
 
-  // def update()
+  def update()
 
-  // def delete()
+  def delete()
 }
