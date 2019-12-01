@@ -1,3 +1,5 @@
 package model
 
-case class Block(id: Int, signature: String, hash: String, value: Int, publicKey: String)
+import java.util.ArrayList
+
+case class Block(id: Int, size: Int, hash: String, transactionList: ArrayList[Transaction] = new ArrayList[Transaction]())

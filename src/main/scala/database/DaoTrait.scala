@@ -1,9 +1,9 @@
 package database
 
-import model.Block
+import model.Transaction
 
 trait DaoTrait {
-  def create(block: Block)
+  def create(block: Transaction)
 
   def read(id: Int)
 
