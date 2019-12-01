@@ -3,9 +3,9 @@ package database
 import model.Transaction
 
 trait DaoTrait {
-  def create(block: Transaction)
+  def create()
 
-  def read(id: Int)
+  def read()
 
   // def update()
 

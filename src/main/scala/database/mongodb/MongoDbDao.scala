@@ -10,11 +10,11 @@ class MongoDbDao extends DaoTrait {
   val database = client.getDatabase("database")
   val collection = database.getCollection("collection")
 
-  override def create(block: Transaction) {
+  override def create() {
 
   }
 
-  override def read(id: Int): Unit = {
+  override def read() {
 
   }
 }
