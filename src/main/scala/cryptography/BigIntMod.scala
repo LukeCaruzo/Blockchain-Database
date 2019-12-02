@@ -12,15 +12,15 @@ class BigIntMod(val n: BigInt, val mod: BigInt) {
 
   def /(arg: BigInt) = this * BigIntMod(arg, mod).inv
 
+  def inv = new BigIntMod(n.modInverse(mod), mod)
+
+  def *(arg: BigIntMod) = BigIntMod(n * arg.n, mod)
+
   def +(arg: BigIntMod) = BigIntMod(n + arg.n, mod)
 
   def -(arg: BigIntMod) = BigIntMod(n - arg.n, mod)
 
   def /(arg: BigIntMod) = this * BigIntMod(arg.n, mod).inv
-
-  def inv = new BigIntMod(n.modInverse(mod), mod)
-
-  def *(arg: BigIntMod) = BigIntMod(n * arg.n, mod)
 
   def ==(arg: BigInt): Boolean = trueMod(arg, mod) == n
 

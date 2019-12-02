@@ -38,6 +38,13 @@ object ECDSA {
     ((r << key.curve.bits) + s)
   }
 
+  def verify(signature: BigInt, key: Key, text: String, digest: String = defaultDigest): Boolean = {
+    val h = hash(text, digest)
+    val r = signature >> key.curve.bits
+    val s = signature % (BigInt(1) << key.curve.bits)
+    key.verify(h, (r, s))
+  }
+
   def hash(text: String, digest: String = defaultDigest): BigInt =
     hashAndLength(text, digest)._1
 
@@ -46,13 +53,6 @@ object ECDSA {
     md.update(text.getBytes("UTF-8"))
     val h = md.digest
     (BigInt(1, h), md.getDigestLength)
-  }
-
-  def verify(signature: BigInt, key: Key, text: String, digest: String = defaultDigest): Boolean = {
-    val h = hash(text, digest)
-    val r = signature >> key.curve.bits
-    val s = signature % (BigInt(1) << key.curve.bits)
-    key.verify(h, (r, s))
   }
 
 }
