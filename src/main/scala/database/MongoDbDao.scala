@@ -1,16 +1,15 @@
-package database.mongodb
+package database
 
 import _root_.model.Transaction
-import database.DaoTrait
 import org.mongodb.scala._
 import util.ObservableHelpers._
 
-class MongoDbDao(user: String, password: String, auth: String) extends DaoTrait {
-  val client = MongoClient("mongodb://" + user + ":" + password + "@localhost:27017/?authSource=" + auth)
+class MongoDbDao(user: String, password: String, role: String) {
+  val client = MongoClient("mongodb://" + user + ":" + password + "@localhost:27017/?authSource=" + role)
   val database = client.getDatabase("blockchain")
   val collection = database.getCollection("Transactions")
 
-  override def update(transaction: Transaction) {
+  def update(transaction: Transaction) {
     val count = collection.countDocuments().execute()
 
     val observable: Observable[Completed] = collection.insertOne(Document("_id" -> (count + 1).toInt,
@@ -25,15 +24,15 @@ class MongoDbDao(user: String, password: String, auth: String) extends DaoTrait 
     })
   }
 
-  override def read() {
+  def read() {
 
   }
 
-  override def create() {
+  def create() {
     throw new Exception("Unsupported action")
   }
 
-  override def delete() {
+  def delete() {
     throw new Exception("Unsupported action")
   }
 }
