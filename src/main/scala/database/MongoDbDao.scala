@@ -12,6 +12,8 @@ class MongoDbDao(user: String, password: String, role: String) {
   val collection = database.getCollection("transactions")
 
   def update(transaction: Transaction) {
+    println("update")
+
     val count = Await.result(collection.countDocuments().toFuture(), Duration(5, "seconds"))
 
     val document = Document("_id" -> (count + 1).toInt, "signature" -> transaction.signature, "hash" -> transaction.hash, "value" -> transaction.value, "publicKey" -> transaction.publicKey)
@@ -25,6 +27,8 @@ class MongoDbDao(user: String, password: String, role: String) {
   }
 
   def read(_id: Int) {
+    println("read")
+
     collection.find(Document("_id" -> _id)).subscribe(new Observer[Document] {
       override def onNext(result: Document): Unit = println(s"onNext: $result")
 
@@ -32,7 +36,6 @@ class MongoDbDao(user: String, password: String, role: String) {
 
       override def onComplete(): Unit = println("onComplete")
     })
-
   }
 
   def create() {

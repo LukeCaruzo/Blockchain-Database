@@ -7,7 +7,10 @@ object Main {
     val dao = new MongoDbDao("myUserAdmin", "abc123", "admin")
 
     dao.update(Transaction.apply("test", "test", 1, "test"))
-    dao.read(2)
+
+    Thread.sleep(1000)
+
+    dao.read(0)
 
     Thread.sleep(1000)
   }
