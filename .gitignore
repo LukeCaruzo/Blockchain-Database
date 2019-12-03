@@ -21,3 +21,6 @@ build/
 
 #general
 *.class
+
+#mongodb
+data/

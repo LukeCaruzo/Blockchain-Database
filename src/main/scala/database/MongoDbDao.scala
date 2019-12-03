@@ -7,9 +7,9 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 class MongoDbDao(user: String, password: String, role: String) {
-  val client = MongoClient() //"mongodb://" + user + ":" + password + "@localhost:27017/?authSource=" + role)
+  val client = MongoClient("mongodb://" + user + ":" + password + "@localhost:27017/?authSource=" + role)
   val database = client.getDatabase("blockchain")
-  val collection = database.getCollection("transactions")
+  val collection = database.getCollection("blocks")
 
   def update(transaction: Transaction) {
     println("update")
