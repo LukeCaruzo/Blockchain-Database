@@ -1,6 +1,5 @@
 import database.MongoDbDao
 import model.Block
-import org.mongodb.scala.bson.ObjectId
 
 object Main {
   def main(args: Array[String]): Unit = {

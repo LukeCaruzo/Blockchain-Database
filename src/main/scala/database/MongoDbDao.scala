@@ -4,13 +4,10 @@ import _root_.model.Block
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
-import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.{MongoClient, _}
 
-import scala.concurrent.{Await, Future}
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
-import scala.util.{Failure, Success}
+import scala.concurrent.{Await, Future}
 
 class MongoDbDao(user: String, password: String, role: String) {
   val codecRegistry = fromRegistries(fromProviders(classOf[Block]), DEFAULT_CODEC_REGISTRY)
@@ -21,41 +18,16 @@ class MongoDbDao(user: String, password: String, role: String) {
 
   val waitDuration = Duration(5, "seconds")
 
-  private def execute(future: Future): Unit = {
-    return Await.result(future, waitDuration)
+  implicit class FutureAwait[T](future: Future[T]) {
+    def execute(): T = Await.result(future, waitDuration)
   }
 
-  def insert(block: Block): Boolean = {
-    var inserted = false
-
-    block.index = count()
-    //Await.result(, waitDuration)
-    collection.insertOne(block).toFuture().onComplete {
-      case Success(value) => inserted = true
-      case Failure(e) => e.printStackTrace
-    }
-
-    while (!inserted) {
-      Thread.sleep(10)
-    }
-
-    inserted
+  def insert(block: Block): Completed = {
+    block.index = this.count
+    collection.insertOne(block).toFuture().execute()
   }
 
-  def count(): Long = {
-    var count: Long = -1
-
-    collection.countDocuments().toFuture().onComplete {
-      case Success(value) => count = value
-      case Failure(e) => e.printStackTrace
-    }
-
-    while (count == -1) {
-      Thread.sleep(10)
-    }
-
-    count
-  }
+  def count(): Long = collection.countDocuments().toFuture().execute()
 
   def read(index: Long): Option[Block] = {
     /*var block = None: Option[Block]
@@ -78,10 +50,10 @@ class MongoDbDao(user: String, password: String, role: String) {
 
     block*/
 
-    val blocks = show
+    //val x: Seq[Block] =collection.find(equal("index", index)).toFuture().execute()
 
-    for(block <- blocks) {
-      if(block.index == index) {
+    for (block <- this.show) {
+      if (block.index == index) {
         return Some(block)
       }
     }
@@ -89,20 +61,6 @@ class MongoDbDao(user: String, password: String, role: String) {
     None
   }
 
-  def show(): Seq[Block] = {
-    var blocks = None: Option[Seq[Block]]
+  def show(): Seq[Block] = collection.find().toFuture().execute()
 
-    collection.find().toFuture().onComplete {
-      case Success(value) => {
-        blocks = Some(value)
-      }
-      case Failure(e) => e.printStackTrace
-    }
-
-    while (blocks == None) {
-      Thread.sleep(10)
-    }
-
-    blocks.get
-  }
 }
