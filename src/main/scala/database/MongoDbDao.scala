@@ -7,7 +7,9 @@ import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.{MongoClient, _}
 
+import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
 import scala.util.{Failure, Success}
 
 class MongoDbDao(user: String, password: String, role: String) {
@@ -17,12 +19,27 @@ class MongoDbDao(user: String, password: String, role: String) {
   val database = client.getDatabase("blockchain").withCodecRegistry(codecRegistry)
   val collection: MongoCollection[Block] = database.getCollection("blocks")
 
-  def insert(block: Block): Unit = {
+  val waitDuration = Duration(5, "seconds")
+
+  private def execute(future: Future): Unit = {
+    return Await.result(future, waitDuration)
+  }
+
+  def insert(block: Block): Boolean = {
+    var inserted = false
+
     block.index = count()
+    //Await.result(, waitDuration)
     collection.insertOne(block).toFuture().onComplete {
-      case Success(value) => println("Inserted " + block)
+      case Success(value) => inserted = true
       case Failure(e) => e.printStackTrace
     }
+
+    while (!inserted) {
+      Thread.sleep(10)
+    }
+
+    inserted
   }
 
   def count(): Long = {
@@ -41,7 +58,7 @@ class MongoDbDao(user: String, password: String, role: String) {
   }
 
   def read(index: Long): Option[Block] = {
-    var placeholder = None: Option[Block]
+    /*var block = None: Option[Block]
     var flag = true
 
     collection.find(equal("index", index)).toFuture().onComplete {
@@ -49,38 +66,43 @@ class MongoDbDao(user: String, password: String, role: String) {
         if (value.isEmpty) {
           flag = false
         } else {
-          placeholder = Some(value.head)
+          block = Some(value.head)
         }
       }
       case Failure(e) => e.printStackTrace
     }
 
-    while (placeholder == None && flag) {
+    while (block == None && flag) {
       Thread.sleep(10)
     }
 
-    placeholder
+    block*/
+
+    val blocks = show
+
+    for(block <- blocks) {
+      if(block.index == index) {
+        return Some(block)
+      }
+    }
+
+    None
   }
 
-  def show(): Option[Seq[Block]] = {
-    var placeholder = None: Option[Seq[Block]]
-    var flag = true
+  def show(): Seq[Block] = {
+    var blocks = None: Option[Seq[Block]]
 
     collection.find().toFuture().onComplete {
       case Success(value) => {
-        if (value.isEmpty) {
-          flag = false
-        } else {
-          placeholder = Some(value)
-        }
+        blocks = Some(value)
       }
       case Failure(e) => e.printStackTrace
     }
 
-    while (placeholder == None && flag) {
+    while (blocks == None) {
       Thread.sleep(10)
     }
 
-    placeholder
+    blocks.get
   }
 }

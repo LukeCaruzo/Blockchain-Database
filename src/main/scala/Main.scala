@@ -12,7 +12,7 @@ object Main {
 
     Thread.sleep(1000)
 
-    println(dao.read(3))
+    println(dao.read(2))
 
     Thread.sleep(1000)
 
