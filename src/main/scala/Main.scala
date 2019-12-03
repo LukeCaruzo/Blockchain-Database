@@ -6,11 +6,17 @@ object Main {
   def main(args: Array[String]): Unit = {
     val dao = new MongoDbDao("myUserAdmin", "abc123", "admin")
 
-    dao.update(Block("test", "test", "test"))
+    println(dao.count())
+
+    println(dao.insert(Block("test", "test", "test")))
 
     Thread.sleep(1000)
 
-    dao.read(0)
+    println(dao.read(3))
+
+    Thread.sleep(1000)
+
+    println(dao.show())
 
     Thread.sleep(1000)
   }

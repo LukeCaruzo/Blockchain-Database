@@ -5,11 +5,10 @@ import org.mongodb.scala.{Completed, Document, MongoClient, Observer, _}
 import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
-
+import org.mongodb.scala.bson.ObjectId
 import org.mongodb.scala.model.Filters._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.util.{Failure, Success}
@@ -21,68 +20,70 @@ class MongoDbDao(user: String, password: String, role: String) {
   val database = client.getDatabase("blockchain").withCodecRegistry(codecRegistry)
   val collection: MongoCollection[Block] = database.getCollection("blocks")
 
-  def update(block: Block) {
-    println("update")
+  def insert(block: Block): Unit = {
+    block.index = count()
+    collection.insertOne(block).toFuture().onComplete {
+      case Success(value) => println("Inserted " + block)
+      case Failure(e) => e.printStackTrace
+    }
+  }
 
-    collection.countDocuments().toFuture().onComplete {
-      case Success(value) => {
-        println(s"Count: Got the callback, meaning = $value")
-        block.index = value
-        println("Block to insert: " + block)
-        collection.insertOne(block).toFuture().onComplete {
-          case Success(value) => println(s"Insert: Got the callback, meaning = $value")
-          case Failure(e) => e.printStackTrace
+  def read(index: Long): Option[Block] = {
+    var placeholder = None : Option[Block]
+    var flag = true
+
+    collection.find(equal("index", index)).toFuture().onComplete {
+      case Success(value) =>  {
+        if(value.isEmpty) {
+          flag = false
+        } else {
+          placeholder = Some(value.head)
         }
       }
       case Failure(e) => e.printStackTrace
     }
 
-    /*
-    val count = Await.result(collection.countDocuments().toFuture(), Duration(5, "seconds"))
+    while (placeholder == None && flag) {
+      Thread.sleep(10)
+    }
 
-    val document = Document("_id" -> (count + 1).toInt, "signature" -> transaction.signature, "hash" -> transaction.hash, "value" -> transaction.value, "publicKey" -> transaction.publicKey)
-
-    collection.insertOne(block).subscribe((res: Completed) => println(res))
-      collection.insertOne(block).subscribe(new Observer[Completed] {
-      override def onNext(result: Completed): Unit = println(s"onNext: $result")
-
-      override def onError(e: Throwable): Unit = println(s"onError: $e")
-
-      override def onComplete(): Unit = println("onComplete")
-    })*/
+    placeholder
   }
 
-  def read(index: Long) {
-    println("read")
+  def show(): Option[Seq[Block]] = {
+    var placeholder = None : Option[Seq[Block]]
+    var flag = true
 
-    /*
-    collection.find(equal("index", index)).subscribe(new Observer[Block] {
-      override def onNext(result: Block): Unit = println(s"onNext: $result")
-
-      override def onError(e: Throwable): Unit = println(s"onError: $e")
-
-      override def onComplete(): Unit = println("onComplete")
-    })*/
-
-    collection.find(equal("index", index)).toFuture().onComplete {
-      case Success(value) => println(s"Read: Got the callback, meaning = $value")
+    collection.find().toFuture().onComplete {
+      case Success(value) =>  {
+        if(value.isEmpty) {
+          flag = false
+        } else {
+          placeholder = Some(value)
+        }
+      }
       case Failure(e) => e.printStackTrace
     }
 
-    /*collection.find(Document("index" -> index)).subscribe(new Observer[Document] {
-      override def onNext(result: Document): Unit = println(s"onNext: $result")
+    while (placeholder == None && flag) {
+      Thread.sleep(10)
+    }
 
-      override def onError(e: Throwable): Unit = println(s"onError: $e")
-
-      override def onComplete(): Unit = println("onComplete")
-    })*/
+    placeholder
   }
 
-  def create() {
-    throw new Exception("Unsupported action")
-  }
+  def count(): Long = {
+    var count: Long = -1
 
-  def delete() {
-    throw new Exception("Unsupported action")
+    collection.countDocuments().toFuture().onComplete {
+      case Success(value) => count = value
+      case Failure(e) => e.printStackTrace
+    }
+
+    while (count ==  -1) {
+      Thread.sleep(10)
+    }
+
+    count
   }
 }
