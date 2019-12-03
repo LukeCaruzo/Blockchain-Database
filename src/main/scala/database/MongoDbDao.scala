@@ -6,6 +6,8 @@ import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
 
+import org.mongodb.scala.model.Filters._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Await
@@ -26,6 +28,7 @@ class MongoDbDao(user: String, password: String, role: String) {
       case Success(value) => {
         println(s"Count: Got the callback, meaning = $value")
         block.index = value
+        println("Block to insert: " + block)
         collection.insertOne(block).toFuture().onComplete {
           case Success(value) => println(s"Insert: Got the callback, meaning = $value")
           case Failure(e) => e.printStackTrace
@@ -52,13 +55,27 @@ class MongoDbDao(user: String, password: String, role: String) {
   def read(index: Long) {
     println("read")
 
-    collection.find(Document("index" -> index)).subscribe(new Observer[Document] {
+    /*
+    collection.find(equal("index", index)).subscribe(new Observer[Block] {
+      override def onNext(result: Block): Unit = println(s"onNext: $result")
+
+      override def onError(e: Throwable): Unit = println(s"onError: $e")
+
+      override def onComplete(): Unit = println("onComplete")
+    })*/
+
+    collection.find(equal("index", index)).toFuture().onComplete {
+      case Success(value) => println(s"Read: Got the callback, meaning = $value")
+      case Failure(e) => e.printStackTrace
+    }
+
+    /*collection.find(Document("index" -> index)).subscribe(new Observer[Document] {
       override def onNext(result: Document): Unit = println(s"onNext: $result")
 
       override def onError(e: Throwable): Unit = println(s"onError: $e")
 
       override def onComplete(): Unit = println("onComplete")
-    })
+    })*/
   }
 
   def create() {
