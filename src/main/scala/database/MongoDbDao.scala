@@ -1,16 +1,13 @@
 package database
 
 import _root_.model.Block
-import org.mongodb.scala.{Completed, Document, MongoClient, Observer, _}
-import org.mongodb.scala.bson.codecs.Macros._
-import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
-import org.mongodb.scala.bson.ObjectId
+import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
+import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala.model.Filters._
+import org.mongodb.scala.{MongoClient, _}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
 import scala.util.{Failure, Success}
 
 class MongoDbDao(user: String, password: String, role: String) {
@@ -28,13 +25,28 @@ class MongoDbDao(user: String, password: String, role: String) {
     }
   }
 
+  def count(): Long = {
+    var count: Long = -1
+
+    collection.countDocuments().toFuture().onComplete {
+      case Success(value) => count = value
+      case Failure(e) => e.printStackTrace
+    }
+
+    while (count == -1) {
+      Thread.sleep(10)
+    }
+
+    count
+  }
+
   def read(index: Long): Option[Block] = {
-    var placeholder = None : Option[Block]
+    var placeholder = None: Option[Block]
     var flag = true
 
     collection.find(equal("index", index)).toFuture().onComplete {
-      case Success(value) =>  {
-        if(value.isEmpty) {
+      case Success(value) => {
+        if (value.isEmpty) {
           flag = false
         } else {
           placeholder = Some(value.head)
@@ -51,12 +63,12 @@ class MongoDbDao(user: String, password: String, role: String) {
   }
 
   def show(): Option[Seq[Block]] = {
-    var placeholder = None : Option[Seq[Block]]
+    var placeholder = None: Option[Seq[Block]]
     var flag = true
 
     collection.find().toFuture().onComplete {
-      case Success(value) =>  {
-        if(value.isEmpty) {
+      case Success(value) => {
+        if (value.isEmpty) {
           flag = false
         } else {
           placeholder = Some(value)
@@ -70,20 +82,5 @@ class MongoDbDao(user: String, password: String, role: String) {
     }
 
     placeholder
-  }
-
-  def count(): Long = {
-    var count: Long = -1
-
-    collection.countDocuments().toFuture().onComplete {
-      case Success(value) => count = value
-      case Failure(e) => e.printStackTrace
-    }
-
-    while (count ==  -1) {
-      Thread.sleep(10)
-    }
-
-    count
   }
 }
