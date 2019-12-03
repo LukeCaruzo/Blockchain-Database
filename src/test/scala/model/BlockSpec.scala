@@ -5,8 +5,8 @@ import org.scalatest._
 import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
-class TransactionSpec extends WordSpec with Matchers {
-  "A Transaction" when {
+class BlockSpec extends WordSpec with Matchers {
+  "A Block" when {
     "new" should {
 
     }
