@@ -1,14 +1,11 @@
 package model
 
-import cryptography.Key
+import cryptography.{ECDSA, Key}
 
-// TODO: Implement Transactions like Block
 object Transaction {
-  def apply(privateKey: Key, data: String): Transaction = {
-
-  }
+  def apply(data: String): Transaction = Transaction("", "", "", "", data)
 }
 
-class Transaction {
-
+case class Transaction(var previousHash: String, var hash: String, var signedHash: String, var publicKey: String, data: String) {
+  override def toString: String = this.getClass.getSimpleName + "(" + previousHash + "," + publicKey + "," + data + ")"
 }

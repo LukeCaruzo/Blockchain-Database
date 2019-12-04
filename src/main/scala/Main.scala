@@ -1,6 +1,6 @@
 import cryptography.{ECDSA, Key}
 import database.MongoDb
-import model.Block
+import model.{Block, Transaction, TransactionList}
 
 object Main {
   val user: String = "myUserAdmin"
@@ -13,7 +13,12 @@ object Main {
     //println(BigInt(212, new Random))
     val privateKey = Key.sec(BigInt("291136341796021072510895648022535616155435573451899175553147951"), ECDSA.p192)
 
-    MongoDb.insert(Block(privateKey, "test"))
+    val transactionList = new TransactionList
+    transactionList.add(privateKey, Transaction("test"))
+    transactionList.add(privateKey, Transaction("test"))
+    println(transactionList)
+
+    MongoDb.insert(Block("tes2t"))
 
     Thread.sleep(1000)
 
@@ -40,8 +45,6 @@ object Main {
     println("timestamp: " + block.timestamp)
     println("previousHash: " + block.previousHash)
     println("hash: " + block.hash)
-    println("encryptedHash: " + block.signedHash)
-    println("publicKey: " + block.publicKey)
     println("data: " + block.data)
     println("")
   }

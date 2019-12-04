@@ -5,6 +5,8 @@ import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistr
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala.{MongoClient, _}
+import _root_.model.TransactionList
+import _root_.model.Transaction
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
