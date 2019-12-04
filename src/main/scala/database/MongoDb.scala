@@ -23,7 +23,6 @@ object MongoDb {
   }
 
   def insert(block: Block): Completed = {
-    block._id = this.count
     collection.insertOne(block).toFuture().execute
   }
 

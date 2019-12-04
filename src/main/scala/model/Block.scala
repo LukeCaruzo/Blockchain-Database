@@ -6,9 +6,8 @@ import database.MongoDb
 
 object Block {
   def apply(data: String): Block = {
-    val block = Block(-1, System.currentTimeMillis.toString, "", "", data)
+    val block = Block(MongoDb.count, System.currentTimeMillis.toString, getPreviousHash, "", data)
 
-    block.previousHash = generatePreviousHash
     block.hash = generateHash(block)
 
     return block
@@ -18,7 +17,7 @@ object Block {
     return MessageDigest.getInstance("SHA-256").digest(block.toString.getBytes("UTF-8")).map("%02x".format(_)).mkString
   }
 
-  def generatePreviousHash: String = {
+  def getPreviousHash: String = {
     val previousBlock = MongoDb.read(MongoDb.count - 1)
 
     if (previousBlock != None) {
@@ -29,4 +28,6 @@ object Block {
   }
 }
 
-case class Block(var _id: Long, timestamp: String, var previousHash: String, var hash: String, data: String)
+case class Block(_id: Long, timestamp: String, previousHash: String, var hash: String, data: String) {
+  override def toString: String = this.getClass.getSimpleName + "(" + _id + "," + timestamp + "," + previousHash + "," + data + ")"
+}
