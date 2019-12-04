@@ -14,7 +14,7 @@ import scala.concurrent.{Await, Future}
 case class MongoDb(user: String, password: String, role: String) {
   val codecRegistry = fromRegistries(fromProviders(classOf[Block]), DEFAULT_CODEC_REGISTRY)
 
-  val client = MongoClient() // ("mongodb://" + user + ":" + password + "@localhost:27017/?authSource=" + role)
+  val client = MongoClient("mongodb://" + user + ":" + password + "@localhost:27017/?authSource=" + role)
   val database = client.getDatabase("blockchain").withCodecRegistry(codecRegistry)
   val collection: MongoCollection[Block] = database.getCollection("blocks")
 
