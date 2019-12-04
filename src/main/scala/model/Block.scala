@@ -9,6 +9,7 @@ object Block {
   def apply(privateKey: Key, data: String): Block = {
     val block = Block(MongoDb.count, System.currentTimeMillis.toString, getPreviousHash, "", "", privateKey.pub.compress.toString, data)
 
+    // TODO: Signing must be in Transactions and data should be Transactionslist
     block.hash = generateHash(block)
     block.signedHash = ECDSA.sign(privateKey, block.hash, "SHA-256").toString
 
