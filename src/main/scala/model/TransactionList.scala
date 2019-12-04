@@ -5,6 +5,7 @@ import java.util._
 
 import cryptography.{ECDSA, Key}
 
+@deprecated
 class TransactionList extends ArrayList[Transaction] {
   def add(privateKey: Key, transaction: Transaction): Boolean = {
     transaction.publicKey = privateKey.pub.compress.toString

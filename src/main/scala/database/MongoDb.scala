@@ -1,17 +1,17 @@
 package database
 
+import java.security.MessageDigest
+
 import _root_.model.Block
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala.{MongoClient, _}
-import _root_.model.TransactionList
-import _root_.model.Transaction
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
-object MongoDb {
+case class MongoDb(user: String, password: String, role: String) {
   val codecRegistry = fromRegistries(fromProviders(classOf[Block]), DEFAULT_CODEC_REGISTRY)
 
   val client = MongoClient() // ("mongodb://" + user + ":" + password + "@localhost:27017/?authSource=" + role)
@@ -25,7 +25,23 @@ object MongoDb {
   }
 
   def insert(block: Block): Completed = {
+    block._id = this.count
+    block.previousHash = getPreviousHash
+    block.hash = generateHash(block)
+
     collection.insertOne(block).toFuture().execute
+  }
+
+  private def generateHash(block: Block): String = MessageDigest.getInstance("SHA-256").digest(block.toString.getBytes("UTF-8")).map("%02x".format(_)).mkString
+
+  private def getPreviousHash: String = {
+    val previousBlock = this.read(this.count - 1)
+
+    if (previousBlock != None) {
+      return previousBlock.get.hash
+    } else {
+      return ""
+    }
   }
 
   def count: Long = collection.countDocuments().toFuture().execute

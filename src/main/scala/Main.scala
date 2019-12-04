@@ -1,28 +1,28 @@
 import cryptography.{ECDSA, Key}
 import database.MongoDb
-import model.{Block, Transaction, TransactionList}
+import model.{Block}
 
 object Main {
-  val user: String = "myUserAdmin"
-  val password: String = "abc123"
-  val role: String = "admin"
+  val user = "myUserAdmin"
+  val password = "abc123"
+  val role = "admin"
 
   def main(args: Array[String]): Unit = {
-    //val dao = new MongoDbDao("myUserAdmin", "abc123", "admin")
+    val dao = new MongoDb("myUserAdmin", "abc123", "admin")
 
-    //println(BigInt(212, new Random))
+    /*//println(BigInt(212, new Random))
     val privateKey = Key.sec(BigInt("291136341796021072510895648022535616155435573451899175553147951"), ECDSA.p192)
 
     val transactionList = new TransactionList
     transactionList.add(privateKey, Transaction("test"))
     transactionList.add(privateKey, Transaction("test"))
-    println(transactionList)
+    println(transactionList)*/
 
-    MongoDb.insert(Block("tes2t"))
+    dao.insert(Block("test"))
 
     Thread.sleep(1000)
 
-    val document = MongoDb.read(1)
+    val document = dao.read(1)
     document match {
       case Some(value) => prettyPrintBlock(value)
       case None => println("No document found")
@@ -30,9 +30,9 @@ object Main {
 
     Thread.sleep(1000)
 
-    println("Documents: " + MongoDb.count)
+    println("Documents: " + dao.count)
 
-    val documents = MongoDb.show
+    val documents = dao.show
     for (document <- documents) {
       prettyPrintBlock(document)
     }
