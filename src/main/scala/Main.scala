@@ -1,21 +1,25 @@
-import database.MongoDbDao
+import database.MongoDb
 import model.Block
 
 object Main {
+  val user: String = "myUserAdmin"
+  val password: String = "abc123"
+  val role: String = "admin"
+
   def main(args: Array[String]): Unit = {
-    val dao = new MongoDbDao("myUserAdmin", "abc123", "admin")
+    //val dao = new MongoDbDao("myUserAdmin", "abc123", "admin")
 
-    println(dao.count())
+    println(MongoDb.count)
 
-    println(dao.insert(Block("test", "test", "test")))
-
-    Thread.sleep(1000)
-
-    println(dao.read(2))
+    println(MongoDb.insert(Block("test")))
 
     Thread.sleep(1000)
 
-    println(dao.show())
+    println(MongoDb.read(2))
+
+    Thread.sleep(1000)
+
+    println(MongoDb.show)
 
     Thread.sleep(1000)
   }

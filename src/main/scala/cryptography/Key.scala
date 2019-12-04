@@ -24,8 +24,6 @@ class Key(val pub: CurvePoint, sec: BigInt = null, val random: Random = new Rand
     return (r, s)
   }
 
-  def jac(P: CurvePoint) = new Jacobian(P)
-
   def verify(hash: BigInt, signature: (BigInt, BigInt), fast: Boolean = false, sInverted: Boolean = true): Boolean = {
 
     val r = BigIntMod(signature._1, n)
@@ -41,6 +39,8 @@ class Key(val pub: CurvePoint, sec: BigInt = null, val random: Random = new Rand
 
     r == X.x
   }
+
+  def jac(P: CurvePoint) = new Jacobian(P)
 
   override def toString =
     pub.toString() +
