@@ -1,3 +1,4 @@
+import cryptography.{ECDSA, Key}
 import database.MongoDb
 import model.Block
 
@@ -9,7 +10,10 @@ object Main {
   def main(args: Array[String]): Unit = {
     //val dao = new MongoDbDao("myUserAdmin", "abc123", "admin")
 
-    MongoDb.insert(Block("test"))
+    //println(BigInt(212, new Random))
+    val privateKey = Key.sec(BigInt("291136341796021072510895648022535616155435573451899175553147951"), ECDSA.p192)
+
+    MongoDb.insert(Block(privateKey, "test"))
 
     Thread.sleep(1000)
 
@@ -24,7 +28,7 @@ object Main {
     println("Documents: " + MongoDb.count)
 
     val documents = MongoDb.show
-    for(document <- documents) {
+    for (document <- documents) {
       prettyPrintBlock(document)
     }
 
@@ -36,6 +40,8 @@ object Main {
     println("timestamp: " + block.timestamp)
     println("previousHash: " + block.previousHash)
     println("hash: " + block.hash)
+    println("encryptedHash: " + block.signedHash)
+    println("publicKey: " + block.publicKey)
     println("data: " + block.data)
     println("")
   }
