@@ -1,9 +1,5 @@
 package model
 
-import java.security.MessageDigest
-
-import database.MongoDb
-
 object Block {
   def apply(data: String): Block = new Block(-1, System.currentTimeMillis.toString, "", "", data)
 }

@@ -44,8 +44,6 @@ case class MongoDb(user: String, password: String, role: String) {
     }
   }
 
-  def count: Long = collection.countDocuments().toFuture().execute
-
   def read(_id: Long): Option[Block] = {
     for (block <- this.show) {
       if (block._id == _id) {
@@ -57,4 +55,6 @@ case class MongoDb(user: String, password: String, role: String) {
   }
 
   def show: Seq[Block] = collection.find().toFuture().execute
+
+  def count: Long = collection.countDocuments().toFuture().execute
 }

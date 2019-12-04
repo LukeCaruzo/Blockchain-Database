@@ -1,6 +1,5 @@
-import cryptography.{ECDSA, Key}
 import database.MongoDb
-import model.{Block}
+import model.Block
 
 object Main {
   val user = "myUserAdmin"
