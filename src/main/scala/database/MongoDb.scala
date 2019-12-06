@@ -2,17 +2,17 @@ package database
 
 import java.security.MessageDigest
 
-import _root_.model.Block
+import model.Block
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
 import org.mongodb.scala._
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
 import util.Helpers._
 
-case class MongoDb(user: String, password: String, source: String) {
+case class MongoDb(connection: String) {
   val codecRegistry = fromRegistries(fromProviders(classOf[Block]), DEFAULT_CODEC_REGISTRY)
 
-  val client = MongoClient("mongodb://" + user + ":" + password + "@localhost:27017/?authSource=" + source)
+  val client = MongoClient(connection)
   val database = client.getDatabase("blockchain").withCodecRegistry(codecRegistry)
   val collection: MongoCollection[Block] = database.getCollection("blocks")
 

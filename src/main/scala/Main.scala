@@ -5,12 +5,16 @@ import org.mongodb.scala.{ChangeStreamObservable, Document}
 import util.Helpers.LatchedObserver
 
 object Main {
-  val user = "myUserAdmin"
-  val password = "abc123"
+  val user = "admin"
+  val password = "test"
   val source = "admin"
+  val address = "localhost:27017"
+  val replica = "rs"
+  val connectionAuth = "mongodb://" + user + ":" + password + "@" + address + "/?authSource=" + source
+  val connectionReplica = "mongodb://" + address + "/?replicaSet=" + replica + "&authSource=" + source
 
   def main(args: Array[String]): Unit = {
-    val dao = new MongoDb("admin", "test", "admin")
+    val dao = new MongoDb(connectionReplica)
 
     // testChangeStreams(dao)
     testDatabaseOperations(dao)

@@ -3,7 +3,6 @@
 # Deletes old database and creates new one
 
 rm -rf ../data
-
 mkdir -p ../data
 
 mongod --dbpath ../data --logpath /usr/local/var/log/mongodb/mongo.log --logappend --fork
