@@ -1,9 +1,9 @@
 #!/bin/bash
 
-rm -rf ../data
-mkdir -p ../data
+rm -rf ../../data
+mkdir -p ../../data
 
-mongod --dbpath ../data --logpath /usr/local/var/log/mongodb/mongo.log --logappend --fork
+mongod --dbpath ../../data --logpath /usr/local/var/log/mongodb/mongo.log --logappend --fork
 
 mongo <<EOF
 use admin
@@ -17,7 +17,7 @@ db.createUser(
 db.adminCommand( { shutdown: 1 } )
 EOF
 
-mongod --dbpath ../data --logpath /usr/local/var/log/mongodb/mongo.log --logappend --fork --auth
+mongod --dbpath ../../data --logpath /usr/local/var/log/mongodb/mongo.log --logappend --fork --auth
 
 # Shows running MongoDB instances
 ps aux | grep -v grep | grep mongod
