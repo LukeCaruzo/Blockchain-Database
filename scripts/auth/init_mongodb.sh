@@ -1,6 +1,4 @@
 #!/bin/bash
-#
-# Deletes old database and creates new one
 
 rm -rf ../data
 mkdir -p ../data

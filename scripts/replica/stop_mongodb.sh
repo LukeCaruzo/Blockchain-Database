@@ -1,6 +1,4 @@
 #!/bin/bash
-#
-# Stops the MongoDB instance
 
 mongo --port 27017 <<EOF
 db.adminCommand( { shutdown: 1 } )
