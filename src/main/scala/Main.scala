@@ -8,7 +8,7 @@ object Main {
   val user = "admin"
   val password = "test"
   val source = "admin"
-  val address = "localhost:27017"
+  val address = "localhost:27018"
   val replica = "rs"
   val connectionAuth = "mongodb://" + user + ":" + password + "@" + address + "/?authSource=" + source
   val connectionReplica = "mongodb://" + address + "/?replicaSet=" + replica + "&authSource=" + source
