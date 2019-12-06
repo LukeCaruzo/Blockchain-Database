@@ -18,10 +18,8 @@ case class MongoDb(user: String, password: String, role: String) {
   val database = client.getDatabase("blockchain").withCodecRegistry(codecRegistry)
   val collection: MongoCollection[Block] = database.getCollection("blocks")
 
-  val waitDuration = Duration(5, "seconds")
-
   implicit class FutureAwait[T](future: Future[T]) {
-    def execute: T = Await.result(future, waitDuration)
+    def execute: T = Await.result(future, Duration(5, "seconds"))
   }
 
   def insert(block: Block): Completed = {
