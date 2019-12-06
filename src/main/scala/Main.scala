@@ -7,31 +7,43 @@ import util.Helpers.LatchedObserver
 object Main {
   def main(args: Array[String]): Unit = {
     testDatabaseOperationsReplica()
-    // testChangeStreams()
     // testDatabaseOperationsAuth()
   }
 
   private def testDatabaseOperationsReplica(): Unit = {
     val replica = "rs"
     val source = "admin"
-    val address1 = "localhost:27018"
+    val address1 = "localhost:27017"
     val address2 = "localhost:27018"
-    val address3 = "localhost:27018"
-    val connectionReplica1 = "mongodb://" + address1 + "/?replicaSet=" + replica + "&authSource=" + source
-    val connectionReplica2 = "mongodb://" + address2 + "/?replicaSet=" + replica + "&authSource=" + source
-    val connectionReplica3 = "mongodb://" + address3 + "/?replicaSet=" + replica + "&authSource=" + source
+    val address3 = "localhost:27019"
+    val connectionReplica1 = "mongodb://" + address1 + "/?replicaSet=" + replica + "&authSource=" + source + "w=majority"
+    val connectionReplica2 = "mongodb://" + address2 + "/?replicaSet=" + replica + "&authSource=" + source + "w=majority"
+    val connectionReplica3 = "mongodb://" + address3 + "/?replicaSet=" + replica + "&authSource=" + source + "w=majority"
 
     val dao1 = new MongoDb(connectionReplica1)
     val dao2 = new MongoDb(connectionReplica2)
     val dao3 = new MongoDb(connectionReplica3)
 
-    println(dao1.insert(Block("test")))
-
-    Thread.sleep(1000)
+    println(dao3.insert(Block("test")))
 
     println("Documents: " + dao1.count)
     println("Documents: " + dao2.count)
     println("Documents: " + dao3.count)
+
+    testChangeStreams(dao1)
+  }
+
+  private def testChangeStreams(dao: MongoDb): Unit = {
+    val observable: ChangeStreamObservable[Document] = dao.collection.watch()
+
+    val observer = new LatchedObserver[ChangeStreamDocument[Document]]()
+    observable.subscribe(observer)
+
+    dao.insert(Block("test"))
+    observer.waitForThenCancel()
+
+    val res = observer.results()
+    println("result: " + res)
   }
 
   private def testDatabaseOperationsAuth(): Unit = {
@@ -63,33 +75,6 @@ object Main {
     }
 
     Thread.sleep(1000)
-  }
-
-  // TODO: doesn't work yet because no replica sets.
-  private def testChangeStreams(dao: MongoDb): Unit = {
-    var observable: ChangeStreamObservable[Document] = dao.collection.watch()
-
-    // Create a observer
-    var observer = new LatchedObserver[ChangeStreamDocument[Document]]()
-    observable.subscribe(observer)
-
-    // Insert a test document into the collection and request a result
-    dao.insert(Block("test"))
-    observer.waitForThenCancel()
-
-    /*val observable = dao.collection.watch.fullDocument(FullDocument.UPDATE_LOOKUP)
-    val observer = new LatchedObserver[ChangeStreamDocument[Document]]()
-    observable.subscribe(observer)
-
-    dao.insert(Block("test"))
-    // val docOld = collection.find(Filters.eq("username", "alice123")).first().execute()
-    // collection.updateOne(Document("{username: 'alice123'}"), Document("{$set : { email: 'NickTest2@example.com'}}")).subscribeAndAwait()
-
-    observer.waitForThenCancel()
-
-    val results = observer.results()
-
-    println(results)*/
   }
 
   private def prettyPrintBlock(block: Block): Unit = {
