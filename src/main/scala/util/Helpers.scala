@@ -9,8 +9,11 @@ import scala.collection.mutable
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
-// https://github.com/mongodb/mongo-scala-driver/blob/master/examples/src/test/scala/tour/Helpers.scala
-// https://github.com/mongodb/mongo-scala-driver/blob/master/driver/src/it/scala/org/mongodb/scala/DocumentationChangeStreamExampleSpec.scala
+/** Observable Helpers
+ *
+ * @see https://github.com/mongodb/mongo-scala-driver/blob/master/examples/src/test/scala/tour/Helpers.scala
+ * @see https://github.com/mongodb/mongo-scala-driver/blob/master/driver/src/it/scala/org/mongodb/scala/DocumentationChangeStreamExampleSpec.scala
+ */
 object Helpers {
   val waitDuration = Duration(5, "seconds")
 
