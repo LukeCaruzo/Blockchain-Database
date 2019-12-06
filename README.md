@@ -13,3 +13,5 @@ Blockchain Database with MongoDB
 * https://mongodb.github.io/mongo-scala-driver/
 * https://github.com/ni431str/Blockchain
 * https://github.com/baturinsky/Scala-Ecc
+* https://github.com/mongodb/mongo-scala-driver/blob/master/examples/src/test/scala/tour/Helpers.scala
+* https://github.com/mongodb/mongo-scala-driver/blob/master/driver/src/it/scala/org/mongodb/scala/DocumentationChangeStreamExampleSpec.scala

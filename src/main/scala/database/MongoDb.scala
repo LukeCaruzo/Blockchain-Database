@@ -7,9 +7,7 @@ import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistr
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala.{MongoClient, _}
-
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
+import util.Helpers._
 
 case class MongoDb(user: String, password: String, role: String) {
   val codecRegistry = fromRegistries(fromProviders(classOf[Block]), DEFAULT_CODEC_REGISTRY)
@@ -18,16 +16,12 @@ case class MongoDb(user: String, password: String, role: String) {
   val database = client.getDatabase("blockchain").withCodecRegistry(codecRegistry)
   val collection: MongoCollection[Block] = database.getCollection("blocks")
 
-  implicit class FutureAwait[T](future: Future[T]) {
-    def execute: T = Await.result(future, Duration(5, "seconds"))
-  }
-
   def insert(block: Block): Completed = {
     block._id = this.count
     block.previousHash = getPreviousHash
     block.hash = generateHash(block)
 
-    collection.insertOne(block).toFuture().execute
+    collection.insertOne(block).execute()
   }
 
   private def generateHash(block: Block): String = MessageDigest.getInstance("SHA-256").digest(block.toString.getBytes("UTF-8")).map("%02x".format(_)).mkString
@@ -52,7 +46,7 @@ case class MongoDb(user: String, password: String, role: String) {
     None
   }
 
-  def show: Seq[Block] = collection.find().toFuture().execute
+  def count: Long = collection.countDocuments().execute()
 
-  def count: Long = collection.countDocuments().toFuture().execute
+  def show: Seq[Block] = collection.find().execute()
 }
