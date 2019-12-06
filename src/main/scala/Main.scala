@@ -7,21 +7,21 @@ import util.Helpers.LatchedObserver
 object Main {
   val user = "myUserAdmin"
   val password = "abc123"
-  val role = "admin"
+  val source = "admin"
 
   def main(args: Array[String]): Unit = {
-    val dao = new MongoDb("myUserAdmin", "abc123", "admin")
+    val dao = new MongoDb("admin", "test", "admin")
 
     // testChangeStreams(dao)
     testDatabaseOperations(dao)
   }
 
   private def testDatabaseOperations(dao: MongoDb): Unit = {
-    dao.insert(Block("test"))
+    println(dao.insert(Block("test")))
 
     Thread.sleep(1000)
 
-    val document = dao.read(1)
+    val document = dao.read(0)
     document match {
       case Some(value) => prettyPrintBlock(value)
       case None => println("No document found")

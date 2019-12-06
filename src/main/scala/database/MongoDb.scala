@@ -9,10 +9,10 @@ import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
 import util.Helpers._
 
-case class MongoDb(user: String, password: String, role: String) {
+case class MongoDb(user: String, password: String, source: String) {
   val codecRegistry = fromRegistries(fromProviders(classOf[Block]), DEFAULT_CODEC_REGISTRY)
 
-  val client = MongoClient("mongodb://" + user + ":" + password + "@localhost:27017/?authSource=" + role)
+  val client = MongoClient("mongodb://" + user + ":" + password + "@localhost:27017/?authSource=" + source)
   val database = client.getDatabase("blockchain").withCodecRegistry(codecRegistry)
   val collection: MongoCollection[Block] = database.getCollection("blocks")
 
