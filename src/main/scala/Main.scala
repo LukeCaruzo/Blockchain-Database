@@ -5,22 +5,44 @@ import org.mongodb.scala.{ChangeStreamObservable, Document}
 import util.Helpers.LatchedObserver
 
 object Main {
-  val user = "admin"
-  val password = "test"
-  val source = "admin"
-  val address = "localhost:27018"
-  val replica = "rs"
-  val connectionAuth = "mongodb://" + user + ":" + password + "@" + address + "/?authSource=" + source
-  val connectionReplica = "mongodb://" + address + "/?replicaSet=" + replica + "&authSource=" + source
-
   def main(args: Array[String]): Unit = {
-    val dao = new MongoDb(connectionReplica)
-
-    // testChangeStreams(dao)
-    testDatabaseOperations(dao)
+    testDatabaseOperationsReplica()
+    // testChangeStreams()
+    // testDatabaseOperationsAuth()
   }
 
-  private def testDatabaseOperations(dao: MongoDb): Unit = {
+  private def testDatabaseOperationsReplica(): Unit = {
+    val replica = "rs"
+    val source = "admin"
+    val address1 = "localhost:27018"
+    val address2 = "localhost:27018"
+    val address3 = "localhost:27018"
+    val connectionReplica1 = "mongodb://" + address1 + "/?replicaSet=" + replica + "&authSource=" + source
+    val connectionReplica2 = "mongodb://" + address2 + "/?replicaSet=" + replica + "&authSource=" + source
+    val connectionReplica3 = "mongodb://" + address3 + "/?replicaSet=" + replica + "&authSource=" + source
+
+    val dao1 = new MongoDb(connectionReplica1)
+    val dao2 = new MongoDb(connectionReplica2)
+    val dao3 = new MongoDb(connectionReplica3)
+
+    println(dao1.insert(Block("test")))
+
+    Thread.sleep(1000)
+
+    println("Documents: " + dao1.count)
+    println("Documents: " + dao2.count)
+    println("Documents: " + dao3.count)
+  }
+
+  private def testDatabaseOperationsAuth(): Unit = {
+    val user = "admin"
+    val password = "test"
+    val source = "admin"
+    val address = "localhost:27018"
+    val connectionAuth = "mongodb://" + user + ":" + password + "@" + address + "/?authSource=" + source
+
+    val dao = new MongoDb(connectionAuth)
+
     println(dao.insert(Block("test")))
 
     Thread.sleep(1000)
