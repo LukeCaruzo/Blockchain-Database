@@ -12,15 +12,6 @@ import scala.concurrent.duration.Duration
 // https://github.com/mongodb/mongo-scala-driver/blob/master/examples/src/test/scala/tour/Helpers.scala
 // https://github.com/mongodb/mongo-scala-driver/blob/master/driver/src/it/scala/org/mongodb/scala/DocumentationChangeStreamExampleSpec.scala
 object Helpers {
-
-  implicit class DocumentObservable[C](val observable: Observable[Document]) extends ImplicitObservable[Document] {
-    override val converter: (Document) => String = (doc) => doc.toJson
-  }
-
-  implicit class GenericObservable[C](val observable: Observable[C]) extends ImplicitObservable[C] {
-    override val converter: (C) => String = (doc) => doc.toString
-  }
-
   val waitDuration = Duration(5, "seconds")
 
   trait ImplicitObservable[C] {
@@ -39,6 +30,10 @@ object Helpers {
     def headResult() = Await.result(observable.head(), Duration(10, TimeUnit.SECONDS))
   }
 
+  implicit class SingleObservableExecutor[T](observable: SingleObservable[T]) {
+    def execute(): T = Await.result(observable.toFuture(), waitDuration)
+  }
+
   implicit class ObservableExecutor[T](observable: Observable[T]) {
     def execute(): Seq[T] = Await.result(observable.toFuture(), waitDuration)
 
@@ -49,8 +44,12 @@ object Helpers {
     }
   }
 
-  implicit class SingleObservableExecutor[T](observable: SingleObservable[T]) {
-    def execute(): T = Await.result(observable.toFuture(), waitDuration)
+  implicit class DocumentObservable[C](val observable: Observable[Document]) extends ImplicitObservable[Document] {
+    override val converter: (Document) => String = (doc) => doc.toJson
+  }
+
+  implicit class GenericObservable[C](val observable: Observable[C]) extends ImplicitObservable[C] {
+    override val converter: (C) => String = (doc) => doc.toString
   }
 
   class LatchedObserver[T](val printResults: Boolean = true, val minimumNumberOfResults: Int = 1) extends Observer[T] {
