@@ -4,9 +4,9 @@ import java.security.MessageDigest
 
 import _root_.model.Block
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
+import org.mongodb.scala._
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
-import org.mongodb.scala.{MongoClient, _}
 import util.Helpers._
 
 case class MongoDb(user: String, password: String, role: String) {
