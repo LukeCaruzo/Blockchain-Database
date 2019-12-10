@@ -29,6 +29,12 @@ object Main {
     println("Documents: " + dao1.count)
     println("Documents: " + dao2.count)
     println("Documents: " + dao3.count)
+    println()
+
+    val documents = dao1.show
+    for (document <- documents) {
+      prettyPrintBlock(document)
+    }
 
     testChangeStreams(dao1)
   }
@@ -39,6 +45,7 @@ object Main {
     val observer = new LatchedObserver[ChangeStreamDocument[Document]]()
     observable.subscribe(observer)
 
+    dao.insert(Block("test"))
     dao.insert(Block("test"))
     observer.waitForThenCancel()
 
