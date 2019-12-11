@@ -6,8 +6,8 @@ import util.Helpers.LatchedObserver
 
 object Main {
   def main(args: Array[String]): Unit = {
-    testDatabaseOperationsReplica()
-    // testDatabaseOperationsAuth()
+    testDatabaseOperationsReplica() // Tests the replica sets with all database operations from the API
+    // testDatabaseOperationsAuth() // Tests the database operations on the MongoDB with authentication enabled
   }
 
   private def testDatabaseOperationsReplica(): Unit = {
@@ -20,9 +20,9 @@ object Main {
     val connectionReplica2 = "mongodb://" + address2 + "/?replicaSet=" + replica + "&authSource=" + source + "w=majority"
     val connectionReplica3 = "mongodb://" + address3 + "/?replicaSet=" + replica + "&authSource=" + source + "w=majority"
 
-    val dao1 = new MongoDb(connectionReplica1)
-    val dao2 = new MongoDb(connectionReplica2)
-    val dao3 = new MongoDb(connectionReplica3)
+    val dao1 = MongoDb(connectionReplica1)
+    val dao2 = MongoDb(connectionReplica2)
+    val dao3 = MongoDb(connectionReplica3)
 
     println(dao3.insert(Block("test")))
 
@@ -60,7 +60,7 @@ object Main {
     val address = "localhost:27018"
     val connectionAuth = "mongodb://" + user + ":" + password + "@" + address + "/?authSource=" + source
 
-    val dao = new MongoDb(connectionAuth)
+    val dao = MongoDb(connectionAuth)
 
     println(dao.insert(Block("test")))
 
