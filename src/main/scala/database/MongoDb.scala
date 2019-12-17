@@ -9,11 +9,11 @@ import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
 import util.Helpers._
 
-/** MongoDB Instance
+/** MongoDB Client Instance
  *
  * @param connection String which contains the connection details
  */
-case class MongoDb(connection: String) {
+class MongoDb(connection: String) {
   val codecRegistry = fromRegistries(fromProviders(classOf[Block]), DEFAULT_CODEC_REGISTRY)
 
   val client = MongoClient(connection)
@@ -27,6 +27,7 @@ case class MongoDb(connection: String) {
    */
   def insert(block: Block): Completed = {
     block._id = this.count
+    block.timestamp = System.currentTimeMillis.toString
     block.previousHash = getPreviousHash
     block.hash = generateHash(block)
 

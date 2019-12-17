@@ -21,9 +21,9 @@ object Main {
     val connectionReplica2 = "mongodb://" + user + ":" + password + "@" + address2 + "/?replicaSet=" + replica + "&authSource=" + source + "&w=majority"
     val connectionReplica3 = "mongodb://" + user + ":" + password + "@" + address3 + "/?replicaSet=" + replica + "&authSource=" + source + "&w=majority"
 
-    val dao1 = MongoDb(connectionReplica1)
-    val dao2 = MongoDb(connectionReplica2)
-    val dao3 = MongoDb(connectionReplica3)
+    val dao1 = new MongoDb(connectionReplica1)
+    val dao2 = new MongoDb(connectionReplica2)
+    val dao3 = new MongoDb(connectionReplica3)
 
     println(dao1.insert(Block("test")))
 
