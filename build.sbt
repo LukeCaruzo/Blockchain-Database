@@ -6,4 +6,4 @@ scalaVersion := "2.13.1"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.1.0" % "test"
 
-libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "2.7.0"
+libraryDependencies += "org.mongodb.scala" %% "mongo-scala-driver" % "2.8.0"
