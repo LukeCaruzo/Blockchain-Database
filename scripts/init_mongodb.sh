@@ -13,65 +13,20 @@ mongod --logpath /usr/local/var/log/mongodb/mongo.log --logappend --fork --replS
 sleep 1
 
 mongo --port 27017 <<EOF
-rsconf = {
-  _id: "rs",
-  members: [ {
-    _id: 0,
-    host: "localhost:27017"
-  }, {
-    _id: 1,
-    host: "localhost:27018"
-  }, {
-    _id: 2,
-    host: "localhost:27019"
-  }
-] }
+rsconf = { _id: "rs", members: [ { _id: 0, host: "localhost:27017" },
+  { _id: 1, host: "localhost:27018" },
+  { _id: 2, host: "localhost:27019" } ] }
 rs.initiate(rsconf)
 EOF
 
 echo "sleeping for 30s to initate primary"
 sleep 30
 
-mongo --port 27017 <<EOF
-rs.status()
-EOF
-
-mongo --port 27017 <<EOF
+array=( 27017 27018 27019 )
+for i in "${array[@]}"; do
+mongo --port "$i" <<EOF
 admin = db.getSiblingDB("admin")
-admin.createUser(
-  {
-    user: "admin",
-    pwd: "test",
-    roles: [ { role: "root", db: "admin" } ]
-  }
-)
+admin.createUser( { user: "admin", pwd: "test", roles: [ { role: "root", db: "admin" } ] } )
 EOF
-
 sleep 1
-
-mongo --port 27018 <<EOF
-admin = db.getSiblingDB("admin")
-admin.createUser(
-  {
-    user: "admin",
-    pwd: "test",
-    roles: [ { role: "root", db: "admin" } ]
-  }
-)
-EOF
-
-sleep 1
-
-mongo --port 27019 <<EOF
-admin = db.getSiblingDB("admin")
-admin.createUser(
-  {
-    user: "admin",
-    pwd: "test",
-    roles: [ { role: "root", db: "admin" } ]
-  }
-)
-EOF
-
-# Shows running MongoDB instances
-ps aux | grep -v grep | grep mongod
+done
