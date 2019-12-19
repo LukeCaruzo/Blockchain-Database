@@ -26,7 +26,10 @@ class MongoClient(override val connection: String) extends MongoTrait {
     collection.insertOne(block).execute()
   }
 
-  private def generateHash(block: Block): String = MessageDigest.getInstance("SHA-256").digest(block.toString.getBytes("UTF-8")).map("%02x".format(_)).mkString
+  private def generateHash(block: Block): String = MessageDigest
+    .getInstance("SHA-256")
+    .digest(block.toString.getBytes("UTF-8"))
+    .map("%02x".format(_)).mkString
 
   private def getPreviousHash: String = {
     val previousBlock = this.read(this.count - 1)
