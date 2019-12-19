@@ -60,7 +60,7 @@ object Main {
   }
 
   private def prettyPrintBlock(block: Block): Unit = {
-    println("_id: " + block._id)
+    println("_id: " + block.id)
     println("timestamp: " + block.timestamp)
     println("previousHash: " + block.previousHash)
     println("hash: " + block.hash)

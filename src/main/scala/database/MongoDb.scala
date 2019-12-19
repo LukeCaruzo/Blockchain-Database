@@ -26,7 +26,7 @@ class MongoDb(connection: String) {
    * @return Status of the insertion
    */
   def insert(block: Block): Completed = {
-    block._id = this.count
+    block.id = this.count
     block.timestamp = System.currentTimeMillis.toString
     block.previousHash = getPreviousHash
     block.hash = generateHash(block)
@@ -59,7 +59,7 @@ class MongoDb(connection: String) {
    */
   def read(_id: Long): Option[Block] = {
     for (block <- this.show) {
-      if (block._id == _id) {
+      if (block.id == _id) {
         return Some(block)
       }
     }

@@ -8,7 +8,7 @@ class BlockSpec extends WordSpec with Matchers {
     "new" should {
       val block = Block("test")
       "be initalized with" in {
-        block._id should be(-1)
+        block.id should be(-1)
         block.timestamp should be("")
         block.previousHash should be("")
         block.hash should be("")
