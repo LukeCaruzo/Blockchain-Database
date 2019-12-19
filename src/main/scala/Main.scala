@@ -1,4 +1,4 @@
-import database.MongoDb
+import database.mongodb.MongoClient
 import model.Block
 import org.mongodb.scala.model.changestream.ChangeStreamDocument
 import org.mongodb.scala.{ChangeStreamObservable, Document}
@@ -21,9 +21,9 @@ object Main {
     val connectionReplica2 = "mongodb://" + user + ":" + password + "@" + address2 + "/?replicaSet=" + replica + "&authSource=" + source + "&w=majority"
     val connectionReplica3 = "mongodb://" + user + ":" + password + "@" + address3 + "/?replicaSet=" + replica + "&authSource=" + source + "&w=majority"
 
-    val dao1 = new MongoDb(connectionReplica1)
-    val dao2 = new MongoDb(connectionReplica2)
-    val dao3 = new MongoDb(connectionReplica3)
+    val dao1 = new MongoClient(connectionReplica1)
+    val dao2 = new MongoClient(connectionReplica2)
+    val dao3 = new MongoClient(connectionReplica3)
 
     println(dao1.insert(Block("test")))
 
@@ -46,7 +46,16 @@ object Main {
     // testChangeStreams(dao1)
   }
 
-  private def testChangeStreams(dao: MongoDb): Unit = {
+  private def prettyPrintBlock(block: Block): Unit = {
+    println("_id: " + block.id)
+    println("timestamp: " + block.timestamp)
+    println("previousHash: " + block.previousHash)
+    println("hash: " + block.hash)
+    println("data: " + block.data)
+    println("")
+  }
+
+  private def testChangeStreams(dao: MongoClient): Unit = {
     val observable: ChangeStreamObservable[Document] = dao.collection.watch()
 
     val observer = new LatchedObserver[ChangeStreamDocument[Document]]()
@@ -57,14 +66,5 @@ object Main {
 
     val res = observer.results()
     println("result: " + res)
-  }
-
-  private def prettyPrintBlock(block: Block): Unit = {
-    println("_id: " + block.id)
-    println("timestamp: " + block.timestamp)
-    println("previousHash: " + block.previousHash)
-    println("hash: " + block.hash)
-    println("data: " + block.data)
-    println("")
   }
 }
