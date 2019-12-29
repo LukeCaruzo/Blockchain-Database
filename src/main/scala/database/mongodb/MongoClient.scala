@@ -18,7 +18,7 @@ class MongoClient(override val connection: String) extends MongoTrait {
   val collection: MongoCollection[Block] = database.getCollection("blocks")
 
   override def insert(block: Block): Completed = {
-    block.id = this.count
+    block._id = this.count
     block.timestamp = System.currentTimeMillis.toString
     block.previousHash = getPreviousHash
     block.hash = generateHash(block)
@@ -45,7 +45,7 @@ class MongoClient(override val connection: String) extends MongoTrait {
 
   override def read(_id: Long): Option[Block] = {
     for (block <- this.show) {
-      if (block.id == _id) {
+      if (block._id == _id) {
         return Some(block)
       }
     }

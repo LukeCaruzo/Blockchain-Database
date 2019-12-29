@@ -55,7 +55,7 @@ object Helpers {
     override val converter: (C) => String = (doc) => doc.toString
   }
 
-  class LatchedObserver[T](val printResults: Boolean = true, val minimumNumberOfResults: Int = 1) extends Observer[T] {
+  class LatchedObserver[T](val printResults: Boolean = false, val minimumNumberOfResults: Int = 1) extends Observer[T] {
     private val latch: CountDownLatch = new CountDownLatch(1)
     private val resultsBuffer: mutable.ListBuffer[T] = new mutable.ListBuffer[T]
     private var subscription: Option[Subscription] = None
