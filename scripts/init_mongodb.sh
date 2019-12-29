@@ -3,7 +3,7 @@
 rm -rf ../data
 mkdir -p ../data/replicaset0 ../data/replicaset1 ../data/replicaset2
 
-openssl rand -base64 756 > ../data/keyfile
+openssl rand -base64 756 >../data/keyfile
 chmod 400 ../data/keyfile
 
 mongod --logpath /usr/local/var/log/mongodb/mongo.log --logappend --fork --replSet rs --port 27017 --dbpath ../data/replicaset0 --bind_ip localhost,server0 --keyFile ../data/keyfile
@@ -22,13 +22,13 @@ EOF
 echo "sleeping for 30s to initate primary"
 sleep 30
 
-array=( 27017 27018 27019 )
+array=(27017 27018 27019)
 for i in "${array[@]}"; do
-mongo --port "$i" <<EOF
+  mongo --port "$i" <<EOF
 admin = db.getSiblingDB("admin")
 admin.createUser( { user: "admin", pwd: "test", roles: [ { role: "root", db: "admin" } ] } )
 EOF
-sleep 1
+  sleep 1
 done
 
 # TODO: SCHEMA VALIDIERUNG https://docs.mongodb.com/manual/core/schema-validation/
