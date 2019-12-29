@@ -30,3 +30,5 @@ admin.createUser( { user: "admin", pwd: "test", roles: [ { role: "root", db: "ad
 EOF
 sleep 1
 done
+
+# TODO: SCHEMA VALIDIERUNG https://docs.mongodb.com/manual/core/schema-validation/
