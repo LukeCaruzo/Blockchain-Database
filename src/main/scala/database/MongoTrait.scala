@@ -8,9 +8,9 @@ trait MongoTrait {
 
   def insert(block: Block): Completed
 
-  def read(_id: Long): Option[Block]
+  def read(_id: Int): Option[Block]
 
-  def count: Long
+  def count: Int
 
   def show: Seq[Block]
 }

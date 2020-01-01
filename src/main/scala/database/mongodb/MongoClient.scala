@@ -41,9 +41,9 @@ class MongoClient(override val connection: String) extends MongoTrait {
     return ""
   }
 
-  override def count: Long = collection.countDocuments().execute()
+  override def count: Int = collection.countDocuments().execute().toInt
 
-  override def read(_id: Long): Option[Block] = {
+  override def read(_id: Int): Option[Block] = {
     for (block <- this.show) {
       if (block._id == _id) {
         return Some(block)
