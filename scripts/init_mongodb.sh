@@ -32,10 +32,9 @@ EOF
 done
 
 for i in "${array[@]}"; do
-mongo --port "$i" --authenticationDatabase "admin" -u "admin" -p "test" <<EOF
-use blockchain
-db.createCollection("blocks", {
-   validator: {
+mongo --port "$i" --authenticationDatabase "admin" -u "admin" -p "test" <<\EOF
+blockchain = db.getSiblingDB("blockchain")
+blockchain.createCollection("blocks", { validator: {
       $jsonSchema: {
          bsonType: "object",
          required: [ "_id", "timestamp", "previousHash", "hash", "data" ],
