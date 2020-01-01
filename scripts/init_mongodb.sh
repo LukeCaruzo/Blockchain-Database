@@ -36,31 +36,25 @@ mongo --port "$i" --authenticationDatabase "admin" -u "admin" -p "test" <<\EOF
 blockchain = db.getSiblingDB("blockchain")
 blockchain.createCollection("blocks", { validator: {
       $jsonSchema: {
-         bsonType: "object",
-         required: [ "_id", "timestamp", "previousHash", "hash", "data" ],
-         properties: {
-            _id: {
+         bsonType: "object", required: [ "_id", "timestamp", "previousHash", "hash", "data" ],
+         properties: { _id: {
                bsonType: "int",
                minimum: 0,
                description: "must be a int and is required"
-            },
-            timestamp: {
+            }, timestamp: {
                bsonType: "string",
                description: "must be a string and is required"
-            },
-            previousHash: {
+            }, previousHash: {
                bsonType: "string",
                minLength: 0,
                maxLength: 64,
                description: "must be a string and is required"
-            },
-            hash: {
+            }, hash: {
                bsonType: "string",
                minLength: 64,
                maxLength: 64,
                description: "must be a string and is required"
-            },
-            data: {
+            }, data: {
                bsonType: "string",
                minLength: 0,
                description: "must be a string and is required"
