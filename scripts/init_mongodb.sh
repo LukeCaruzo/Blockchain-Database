@@ -31,10 +31,9 @@ EOF
   sleep 1
 done
 
-# TODO: SCHEMA VALIDIERUNG https://docs.mongodb.com/manual/core/schema-validation/
-
-mongo --port 27017 <<EOF
-use "blockchain"
+for i in "${array[@]}"; do
+mongo --port "$i" --authenticationDatabase "admin" -u "admin" -p "test" <<EOF
+use blockchain
 db.createCollection("blocks", {
    validator: {
       $jsonSchema: {
@@ -44,30 +43,32 @@ db.createCollection("blocks", {
             _id: {
                bsonType: "int",
                minimum: 0,
-               description: "is int and is required"
+               description: "must be a int and is required"
             },
             timestamp: {
                bsonType: "string",
-               description: "is a string and is required"
+               description: "must be a string and is required"
             },
             previousHash: {
                bsonType: "string",
                minLength: 0,
                maxLength: 64,
-               description: "is a string and is required"
+               description: "must be a string and is required"
             },
             hash: {
                bsonType: "string",
                minLength: 64,
                maxLength: 64,
-               description: "is a string and is required"
+               description: "must be a string and is required"
             },
             data: {
                bsonType: "string",
-               description: "is a string and is required"
+               minLength: 0,
+               description: "must be a string and is required"
             }
          }
       }
    }
 })
+  sleep 1
 EOF
