@@ -70,5 +70,6 @@ db.createCollection("blocks", {
       }
    }
 })
-  sleep 1
 EOF
+  sleep 1
+done
