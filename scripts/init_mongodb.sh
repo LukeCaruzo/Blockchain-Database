@@ -31,8 +31,10 @@ EOF
   sleep 1
 done
 
+# TODO: Create users that only can use insert.
+
 for i in "${array[@]}"; do
-mongo --port "$i" --authenticationDatabase "admin" -u "admin" -p "test" <<\EOF
+mongo --port "$i" -u "admin" -p "test" <<\EOF
 blockchain = db.getSiblingDB("blockchain")
 blockchain.createCollection("blocks", { validator: {
       $jsonSchema: {
