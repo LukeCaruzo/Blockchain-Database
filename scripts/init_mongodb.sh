@@ -12,7 +12,7 @@ mongod --logpath /usr/local/var/log/mongodb/mongo.log --logappend --fork --replS
 
 sleep 1
 
-mongo --port 27017 <<EOF
+mongo --port 27017 <<\EOF
 rsconf = { _id: "rs", members: [ { _id: 0, host: "localhost:27017" },
   { _id: 1, host: "localhost:27018" },
   { _id: 2, host: "localhost:27019" } ] }
@@ -24,9 +24,21 @@ sleep 30
 
 array=(27017 27018 27019)
 for i in "${array[@]}"; do
-  mongo --port "$i" <<EOF
+  mongo --port "$i" <<\EOF
 admin = db.getSiblingDB("admin")
 admin.createUser( { user: "admin", pwd: "test", roles: [ { role: "root", db: "admin" } ] } )
+EOF
+  sleep 1
+done
+
+for i in "${array[@]}"; do
+  mongo --port "$i" -u "admin" -p "test" <<\EOF
+admin = db.getSiblingDB("admin")
+admin.createRole( { role: "onlyReadInsert",
+     privileges: [ { resource: { db: "blockchain", collection: "blocks" }, actions: [ "find", "insert" ] } ],
+     roles: [ ]
+})
+admin.createUser( { user: "lucas", pwd: "schmidt", roles: [ { role: "onlyReadInsert", db: "admin" } ] } )
 EOF
   sleep 1
 done

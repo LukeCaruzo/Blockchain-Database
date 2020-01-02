@@ -9,8 +9,8 @@ object Main {
   private def testDatabaseOperationsReplica(): Unit = {
     val replica = "rs"
     val source = "admin"
-    val user = "admin"
-    val password = "test"
+    val user = "lucas"
+    val password = "schmidt"
     val address1 = "localhost:27017"
     val address2 = "localhost:27018"
     val address3 = "localhost:27019"
