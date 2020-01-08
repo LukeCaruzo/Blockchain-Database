@@ -78,3 +78,5 @@ blockchain.createCollection("blocks", { validator: {
 EOF
   sleep 1
 done
+
+source change_stream_daemon.sh
