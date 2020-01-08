@@ -9,6 +9,7 @@ import org.mongodb.scala._
 import org.mongodb.scala.bson.codecs.DEFAULT_CODEC_REGISTRY
 import org.mongodb.scala.bson.codecs.Macros._
 import util.Helpers._
+import org.mongodb.scala.model.Filters._
 
 class MongoClient(override val connection: String) extends MongoTrait {
   val codecRegistry = fromRegistries(fromProviders(classOf[Block]), DEFAULT_CODEC_REGISTRY)
@@ -44,13 +45,13 @@ class MongoClient(override val connection: String) extends MongoTrait {
   override def count: Int = collection.countDocuments().execute().toInt
 
   override def read(_id: Int): Option[Block] = {
-    for (block <- this.show) {
-      if (block._id == _id) {
-        return Some(block)
-      }
-    }
+    val result = collection.find(equal("_id", _id)).execute()
 
-    None
+    if(result.isEmpty) {
+      return None
+    } else {
+      return Some(result(0))
+    }
   }
 
   override def show: Seq[Block] = collection.find().execute()
