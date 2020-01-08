@@ -43,8 +43,6 @@ EOF
   sleep 1
 done
 
-# TODO: Create users that only can use insert.
-
 for i in "${array[@]}"; do
 mongo --port "$i" -u "admin" -p "test" <<\EOF
 blockchain = db.getSiblingDB("blockchain")
