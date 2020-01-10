@@ -24,13 +24,15 @@ object Main {
 
     println(dao1.insert(Block("test")))
 
+    Thread.sleep(1000)
+
     val document = dao1.read(0)
     document match {
       case Some(value) => prettyPrintBlock(value)
       case None => println("No document found")
     }
 
-    val documents = dao3.show
+    val documents = dao2.show
     for (document <- documents) {
       prettyPrintBlock(document)
     }
