@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# https://docs.mongodb.com/manual/reference/method/db.collection.watch/
-
 mongo --port 27019 -u "admin" -p "test" <<\EOF
 blockchain = db.getSiblingDB("blockchain")
 watchCursor = blockchain.blocks.watch()
