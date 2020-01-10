@@ -7,3 +7,5 @@ admin = db.getSiblingDB("admin")
 admin.shutdownServer();
 EOF
 done
+
+kill "$(pgrep -f change_stream_daemon.sh)"
