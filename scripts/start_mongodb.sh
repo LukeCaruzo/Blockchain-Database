@@ -5,5 +5,4 @@ for i in "${!mservers[@]}"; do
   mongod --logpath /usr/local/var/log/mongodb/mongo.log --logappend --fork --replSet rs --port "${mservers[${i}]}" --dbpath ../data/replicaset${i} --bind_ip localhost,server${i} --keyFile ../data/keyfile
 done
 
-# Shows running MongoDB instances
-ps aux | grep -v grep | grep mongod
+source change_stream_daemon.sh
